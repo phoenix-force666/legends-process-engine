@@ -15,4 +15,6 @@ public interface IFormService {
     public TableDataInfo findByPage(FormEntity formEntity, PageDomain pageDomain);
 
     public int save(FormEntity formEntity);
+
+    public FormEntity findById(Long id);
 }

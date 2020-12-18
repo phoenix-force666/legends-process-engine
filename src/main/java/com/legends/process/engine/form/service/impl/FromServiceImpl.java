@@ -53,4 +53,9 @@ public class FromServiceImpl implements IFormService {
         }
         return i;
     }
+
+    @Override
+    public FormEntity findById(Long id) {
+        return mongoTemplate.findById(id,FormEntity.class);
+    }
 }

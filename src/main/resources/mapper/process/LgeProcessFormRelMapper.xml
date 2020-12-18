@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.legends.process.engine.mapper.LgeProcessFormRelMapper">
+
+    <resultMap type="LgeProcessFormRel" id="LgeProcessFormRelResult">
+        <result property="id"    column="id"    />
+        <result property="processDeploymentId"    column="process_deployment_id" />
+        <result property="formDeployId"    column="form_deploy_id"    />
+        <result property="formId"    column="form_id"    />
+    </resultMap>
+
+    <sql id="selectLgeProcessFormRelVo">
+        select id, process_deployment_id, form_deploy_id, form_id from lge_process_form_rel
+    </sql>
+
+    <select id="selectLgeProcessFormRelList" parameterType="LgeProcessFormRel" resultMap="LgeProcessFormRelResult">
+        <include refid="selectLgeProcessFormRelVo"/>
+        <where>
+            <if test="processDeploymentId != null  and processDeploymentId != ''"> and process_deployment_id = #{processDeploymentId}</if>
+            <if test="formDeployId != null "> and form_deploy_id = #{formDeployId}</if>
+            <if test="formId != null  and formId != ''"> and form_id = #{formId}</if>
+        </where>
+    </select>
+
+    <select id="selectLgeProcessFormRelById" parameterType="Long" resultMap="LgeProcessFormRelResult">
+        <include refid="selectLgeProcessFormRelVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="getProcessFormByProcessDeploymentId" parameterType="String" resultMap="LgeProcessFormRelResult">
+        <include refid="selectLgeProcessFormRelVo"/>
+        where process_deployment_id = #{process_deployment_id}
+    </select>
+
+    <insert id="insertLgeProcessFormRel" parameterType="LgeProcessFormRel" useGeneratedKeys="true" keyProperty="id">
+        insert into lge_process_form_rel
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="processDeploymentId != null and processDeploymentId != ''">process_deployment_id,</if>
+            <if test="formDeployId != null">form_deploy_id,</if>
+            <if test="formId != null">form_id,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="processDeploymentId != null and processDeploymentId != ''">#{processDeploymentId},</if>
+            <if test="formDeployId != null">#{formDeployId},</if>
+            <if test="formId != null">#{formId},</if>
+        </trim>
+    </insert>
+
+    <update id="updateLgeProcessFormRel" parameterType="LgeProcessFormRel">
+        update lge_process_form_rel
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="processDeploymentId != null and processDeploymentId != ''">process_deployment_id = #{processDeploymentId},</if>
+            <if test="formDeployId != null">form_deploy_id = #{formDeployId},</if>
+            <if test="formId != null">form_id = #{formId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteLgeProcessFormRelById" parameterType="Long">
+        delete from lge_process_form_rel where id = #{id}
+    </delete>
+
+    <delete id="deleteLgeProcessFormRelByIds" parameterType="String">
+        delete from lge_process_form_rel where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
