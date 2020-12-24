@@ -200,10 +200,11 @@ public class GroupServiceImpl {
             .list();
     Iterator<String> uids = userids.iterator();
     while (uids.hasNext()) {
+      String next = uids.next();
       users.stream()
           .forEach(
               user -> {
-                if (user.getId().equals(uids.next()))
+                if (user.getId().equals(next))
                   ;
                 uids.remove();
               });
@@ -226,7 +227,7 @@ public class GroupServiceImpl {
     String pId = lgeGroupRel.getParentId();
     while (!"0".equals(pId)) {
       newIds.add(pId);
-      newIds = getParentGroupIds(pId, newIds);
+      return getParentGroupIds(pId, newIds);
     }
     return newIds;
   }

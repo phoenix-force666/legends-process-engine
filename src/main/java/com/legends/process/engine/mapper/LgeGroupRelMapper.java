@@ -2,6 +2,7 @@ package com.legends.process.engine.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.legends.process.engine.domain.legends.LgeGroupRel;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 

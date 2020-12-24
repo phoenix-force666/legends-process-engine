@@ -1,5 +1,6 @@
 package com.legends.process.engine.domain.legends;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.ruoyi.common.core.web.domain.BaseEntity;
 
 /**
@@ -10,6 +11,7 @@ import com.ruoyi.common.core.web.domain.BaseEntity;
  * @description: TODO
  * @date 2020/12/2015:34
  */
+@TableName("lge_group_rel")
 public class LgeGroupRel  extends BaseEntity {
 
     private static final long serialVersionUID = 1L;

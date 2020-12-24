@@ -10,7 +10,7 @@
     </resultMap>
 
     <sql id="selectLgeGroupRel">
-        select id, parentId from lge_group_rel
+        select id, parent_id from lge_group_rel
     </sql>
 
     <select id="selectLgeGroupRelList" parameterType="String" resultMap="LgeGroupRelResult">
@@ -33,7 +33,7 @@
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null and id != ''">#{id},</if>
-            <if test="parentId != null">#{parent_id},</if>
+            <if test="parentId != null">#{parentId},</if>
         </trim>
     </insert>
 
