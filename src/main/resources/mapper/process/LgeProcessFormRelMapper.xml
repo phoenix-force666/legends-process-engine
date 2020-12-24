@@ -6,9 +6,10 @@
 
     <resultMap type="LgeProcessFormRel" id="LgeProcessFormRelResult">
         <result property="id"    column="id"    />
-        <result property="processDeploymentId"    column="process_deployment_id" />
+        <result property="processDeploymentId"    column="process_deployment_id"    />
         <result property="formDeployId"    column="form_deploy_id"    />
         <result property="formId"    column="form_id"    />
+        <result property="processDefId"    column="process_def_id"    />
     </resultMap>
 
     <sql id="selectLgeProcessFormRelVo">
@@ -32,6 +33,11 @@
     <select id="getProcessFormByProcessDeploymentId" parameterType="String" resultMap="LgeProcessFormRelResult">
         <include refid="selectLgeProcessFormRelVo"/>
         where process_deployment_id = #{process_deployment_id}
+    </select>
+
+    <select id="getProcessFormByProcessDefId" parameterType="String" resultMap="LgeProcessFormRelResult">
+        <include refid="selectLgeProcessFormRelVo"/>
+        where process_def_id = #{processDefId}
     </select>
 
     <insert id="insertLgeProcessFormRel" parameterType="LgeProcessFormRel" useGeneratedKeys="true" keyProperty="id">

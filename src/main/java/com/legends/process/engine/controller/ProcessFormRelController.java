@@ -62,21 +62,33 @@ public class ProcessFormRelController extends BaseController
 
     /**
      * 获取表单
-     * @param processDeploymentId
+     * @param processDefId
      * @return
      */
-    @RequestMapping(value = "/form/{processDeploymentId}", method = RequestMethod.GET)
-    public AjaxResult getProcessFormByProcessDeploymentId(@PathVariable(value = "processDeploymentId") String processDeploymentId) {
-        return AjaxResult.success(processFormRelBiz.getProcessFormByProcessDeploymentId(processDeploymentId));
+    @RequestMapping(value = "/form/{processDefId}", method = RequestMethod.GET)
+    public AjaxResult getProcessFormByProcessDefId(@PathVariable(value = "processDefId") String processDefId) {
+        return AjaxResult.success(processFormRelBiz.getProcessFormByProcessDefId(processDefId));
     }
+
+
+    /**
+     * 获取表单与数据
+     * @param processDefId
+     * @return
+     */
+    @RequestMapping(value = "/form/{processDefId}/{processInstId}", method = RequestMethod.GET)
+    public AjaxResult getProcessFormInfoByProcessDefId(@PathVariable(value = "processDefId") String processDefId,@PathVariable(value = "processInstId") String processInstId) {
+        return AjaxResult.success(processFormRelBiz.getProcessFormInfoByProcessDefId(processDefId,processInstId));
+    }
+
+
 
 
     /**
      * 新增流程表单关联
      */
     @PostMapping
-    public AjaxResult add(@RequestBody LgeProcessFormRel lgeProcessFormRel)
-    {
+    public AjaxResult add(@RequestBody LgeProcessFormRel lgeProcessFormRel) {
         return toAjax(lgeProcessFormRelService.insertLgeProcessFormRel(lgeProcessFormRel));
     }
 

@@ -1,14 +1,14 @@
 package com.legends.process.engine.domain;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.core.annotation.Excel;
 import com.ruoyi.common.core.web.domain.BaseEntity;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 /**
  * 流程单关联对象 lge_process_form_rel
  *
  * @author herion
- * @date 2020-12-16
+ * @date 2020-12-22
  */
 public class LgeProcessFormRel extends BaseEntity
 {
@@ -28,6 +28,10 @@ public class LgeProcessFormRel extends BaseEntity
     /** 表单id */
     @Excel(name = "表单id")
     private String formId;
+
+    /** 流程定义ID */
+    @Excel(name = "流程定义ID")
+    private String processDefId;
 
     public void setId(Long id)
     {
@@ -65,6 +69,15 @@ public class LgeProcessFormRel extends BaseEntity
     {
         return formId;
     }
+    public void setProcessDefId(String processDefId)
+    {
+        this.processDefId = processDefId;
+    }
+
+    public String getProcessDefId()
+    {
+        return processDefId;
+    }
 
     @Override
     public String toString() {
@@ -73,6 +86,7 @@ public class LgeProcessFormRel extends BaseEntity
                 .append("processDeploymentId", getProcessDeploymentId())
                 .append("formDeployId", getFormDeployId())
                 .append("formId", getFormId())
+                .append("processDefId", getProcessDefId())
                 .toString();
     }
 }

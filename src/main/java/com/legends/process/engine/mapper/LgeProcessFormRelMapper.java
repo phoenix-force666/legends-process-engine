@@ -23,6 +23,8 @@ public interface LgeProcessFormRelMapper extends BaseMapper<LgeProcessFormRel>
 
     public LgeProcessFormRel getProcessFormByProcessDeploymentId(String processDeploymentId);
 
+    public LgeProcessFormRel getProcessFormByProcessDefId(String processDeftId);
+
     /**
      * 查询流程表单关联列表
      * 

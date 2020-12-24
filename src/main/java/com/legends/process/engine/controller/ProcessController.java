@@ -45,8 +45,7 @@ public class ProcessController {
 
 	@ApiOperation(value = "查找运行任务", notes = "根据流程定义Key查找运行任务")
 	@RequestMapping(value = "/getTaskIds/{processDefKey}", method = RequestMethod.POST)
-	public ComResp<List<TaskDto>> getTaskIds(
-            @ApiParam(name = "processDefKey", value = "流程定义Key", required = true) @PathVariable String processDefKey)
+	public ComResp<List<TaskDto>> getTaskIds(@ApiParam(name = "processDefKey", value = "流程定义Key", required = true) @PathVariable String processDefKey)
 			throws Exception{
 		return new ComResp.Builder().data(processService.getTaskIds(processDefKey)).success().build();
 	}
@@ -66,8 +65,8 @@ public class ProcessController {
 
 	@ApiOperation(value = "流程驳回", notes = "流程驳回，驳回类型，1：起草节点，2：上一节点，3：目标节点")
 	@RequestMapping(value = "/rollback", method =  RequestMethod.POST)
-	public ComResp<List<TaskDto>> rollback(ComReq<PscCommonTaskRequest> comReq, HttpServletRequest request) throws Exception{
-		return new ComResp.Builder().fromReq(comReq).data(processService.rollback(comReq.getData(),request)).success().build();
+	public ComResp<List<TaskDto>> rollback(@RequestBody  PscCommonTaskRequest pscCommonTaskRequest, HttpServletRequest request) throws Exception{
+		return new ComResp.Builder().data(processService.rollback(pscCommonTaskRequest,request)).success().build();
 	}
 
 	@ApiOperation(value = "流程终止、作废", notes = "流程终止、作废，审批人执行为终止、提交人执行草稿状态的为作废")
