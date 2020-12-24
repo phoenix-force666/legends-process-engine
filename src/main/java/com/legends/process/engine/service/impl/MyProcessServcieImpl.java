@@ -67,7 +67,6 @@ public class MyProcessServcieImpl implements IMyProcessService {
                 .orderByProcessInstanceStartTime()
                 .desc()
                 .listPage(0,10);
-
         list.forEach(history ->{
             System.out.println(historyService.createHistoricVariableInstanceQuery().processInstanceId(history.getId()).variableName("instanceFormType").singleResult().getValue().toString());
             System.out.println(historyService.createHistoricVariableInstanceQuery().processInstanceId(history.getId()).variableName("title").singleResult().getValue().toString());
@@ -181,8 +180,12 @@ public class MyProcessServcieImpl implements IMyProcessService {
     @Override
     public List<MyProcessVO> approveList(String userName,MyProcessReq myProcessReq) {
         List<Task> tasks=taskService.createTaskQuery()
+                .or()
                 .taskAssignee(userName)
-//                .taskCandidateGroup()//组
+                .taskCandidateUser(userName)
+                //组
+                .taskCandidateGroup("shanghai")
+                .endOr()
                 .list();
 
         List<MyProcessVO> list=new ArrayList<MyProcessVO>();
@@ -190,14 +193,13 @@ public class MyProcessServcieImpl implements IMyProcessService {
             HistoricProcessInstance historicProcessInstances  = historyService.createHistoricProcessInstanceQuery()
                     .processInstanceId(task.getProcessInstanceId())
                     .singleResult();
-
             MyProcessVO myProcessVO = new MyProcessVO();
             myProcessVO.setId(task.getId());
             myProcessVO.setProcName(historicProcessInstances.getProcessDefinitionName());
             myProcessVO.setTitle(historicProcessInstances.getProcessDefinitionName());
             myProcessVO.setStartUserId(historicProcessInstances.getStartUserId());
             myProcessVO.setState(historicProcessInstances.getState());
-            myProcessVO.setProcDefKey(task.getTaskDefinitionKey());
+            myProcessVO.setProcDefKey(historicProcessInstances.getProcessDefinitionKey());
             myProcessVO.setTenantId(task.getTenantId());
             myProcessVO.setStartTime(task.getCreateTime());
             myProcessVO.setEndTime(historicProcessInstances.getEndTime());
@@ -206,7 +208,7 @@ public class MyProcessServcieImpl implements IMyProcessService {
             myProcessVO.setTaskId(task.getId());
             myProcessVO.setTaskDefKey(task.getTaskDefinitionKey());
             myProcessVO.setProcessInstId(task.getProcessInstanceId());
-            myProcessVO.setProcessDefId(task.getProcessDefinitionId());
+            myProcessVO.setProcessDefId(historicProcessInstances.getProcessDefinitionId());
             list.add(myProcessVO);
         });
 

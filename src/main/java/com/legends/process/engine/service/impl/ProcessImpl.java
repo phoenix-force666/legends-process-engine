@@ -1,6 +1,8 @@
 package com.legends.process.engine.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.legends.process.engine.form.domain.FormDataEntity;
+import com.legends.process.engine.form.service.IFormDataService;
 import com.legends.process.engine.service.IProcessService;
 import com.legends.process.engine.vo.PscCommonProcessRequest;
 import com.legends.process.engine.vo.PscCommonTaskRequest;
@@ -46,11 +48,11 @@ public class ProcessImpl implements IProcessService {
 	private ProcessEngine processEngine;
 	
 
-	// @Context
-	// protected HttpServletRequest request;
-
 	@Autowired
 	private IdentityService identityService;
+
+	@Autowired
+	IFormDataService formDataService;
 
 	/**
 	 * 初始化流程
@@ -84,6 +86,13 @@ public class ProcessImpl implements IProcessService {
 		} else {
 			throw new Exception("创建流程实例失败：");
 		}
+
+		//保存表单数据
+		FormDataEntity formDataEntity=new FormDataEntity();
+		formDataEntity.setFormId(pscCommonProcessRequest.getFormId());
+		formDataEntity.setId(processInstance.getId());
+		formDataEntity.setData(pscCommonProcessRequest.getFormData());
+		formDataService.save(formDataEntity);
 		return resultList;
 	}
 
@@ -184,8 +193,9 @@ public class ProcessImpl implements IProcessService {
 	 * @throws Exception
 	 */
 	@Override
-	public List<TaskDto> approve(PscCommonTaskRequest pscCommonTaskRequest, HttpServletRequest request)
-			throws Exception {
+	public List<TaskDto> approve(PscCommonTaskRequest pscCommonTaskRequest, HttpServletRequest request) throws Exception {
+		pscCommonTaskRequest.setUserId(request.getHeader(CacheConstants.DETAILS_USERNAME));
+
 		AuthenticationService authenticationService = new AuthenticationService();
 		String engineName = processEngine.getName();
 		UserAuthentication authentication = (UserAuthentication) authenticationService.createAuthenticate(engineName,
@@ -267,8 +277,8 @@ public class ProcessImpl implements IProcessService {
 	 * @throws Exception
 	 */
 	@Override
-	public List<TaskDto> rollback(PscCommonTaskRequest pscCommonTaskRequest, HttpServletRequest request)
-			throws Exception {
+	public List<TaskDto> rollback(PscCommonTaskRequest pscCommonTaskRequest, HttpServletRequest request) throws Exception {
+		pscCommonTaskRequest.setUserId(request.getHeader(CacheConstants.DETAILS_USERNAME));
 		String rejectType = pscCommonTaskRequest.getRejectType();
 		if(StringUtils.isBlank(rejectType)){
 			throw new Exception("驳回类型不能为空！");

@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
 
-@Document(collection = "formEngine")
+@Document(collection = "form")
 @Data
 public class FormEntity implements Serializable {
 
@@ -30,7 +30,7 @@ public class FormEntity implements Serializable {
 
 
     /**
-     * 表单数据
+     * 表单
      */
     private JSONObject data;
 

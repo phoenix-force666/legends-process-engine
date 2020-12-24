@@ -16,25 +16,13 @@ import java.util.Map;
 public class PscCommonProcessRequest {
 	@ApiModelProperty(value="流程定义ID")
 	private String	processDefId;
-	
+
 	@ApiModelProperty(value="流程定义Key")
 	private String	processDefKey;
-	
-	public String getProcessDefKey() {
-		return processDefKey;
-	}
-	public void setProcessDefKey(String processDefKey) {
-		this.processDefKey = processDefKey;
-	}
+
 	@ApiModelProperty(value="启动者")
 	private String	starter;
-	
-	public String getStarter() {
-		return starter;
-	}
-	public void setStarter(String starter) {
-		this.starter = starter;
-	}
+
 	@ApiModelProperty(value="流程标题")
 	private	String	title;
 	
@@ -43,6 +31,16 @@ public class PscCommonProcessRequest {
 	
 	@ApiModelProperty(value="流程变量键值对")
 	private Map<String, Object> variables;
+
+	@ApiModelProperty(value="流程实例ID")
+	private String	processInstId;
+
+	@ApiModelProperty(value="表单ID")
+	private Long formId;
+
+	@ApiModelProperty(value="表单数据")
+	private Map<String, Object> formData;
+
    
 	public static String REJECT_TO_START ="1";
 	public static String REJECT_TO_LAST ="2";
