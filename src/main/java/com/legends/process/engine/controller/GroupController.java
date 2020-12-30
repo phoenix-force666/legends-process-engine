@@ -65,6 +65,19 @@ public class GroupController {
   }
 
   /**
+   * 根据组ID获取组
+   *
+   * @param id
+   * @return
+   */
+  @DeleteMapping("/{id}")
+  @ApiOperation(value = "根据组ID删除组", notes = "根据组ID删除组")
+  public ComResp<String> deleteGroup(@PathVariable String id) {
+
+    return new ComResp.Builder().data(groupService.delGroup(id)).build();
+  }
+
+  /**
    * 根据组ID获取其下用户IDs
    *
    * @param id

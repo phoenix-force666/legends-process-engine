@@ -4,7 +4,6 @@ import com.legends.process.engine.base.utils.text.UUID;
 import com.legends.process.engine.domain.legends.GroupTree;
 import com.legends.process.engine.domain.legends.LgeGroupRel;
 import com.legends.process.engine.entity.legends.LgeGroup;
-import com.legends.process.engine.enums.LgeProcessEngine;
 import com.legends.process.engine.mapper.LgeGroupRelMapper;
 import com.legends.process.engine.repository.GroupTreeRepository;
 import org.camunda.bpm.engine.IdentityService;
@@ -33,8 +32,8 @@ import java.util.stream.StreamSupport;
 public class GroupServiceImpl {
 
   @Autowired IdentityService identityService;
-/*  private final IdentityService identityService =
-      LgeProcessEngine.INSTANCE.getProcessEngine().getIdentityService();*/
+  /*  private final IdentityService identityService =
+  LgeProcessEngine.INSTANCE.getProcessEngine().getIdentityService();*/
 
   @Autowired LgeGroupRelMapper lgeGroupRelMapper;
 
@@ -174,6 +173,7 @@ public class GroupServiceImpl {
 
   /**
    * 批量建立组与用户关系
+   *
    * @param gid
    * @param userids
    */
@@ -247,5 +247,19 @@ public class GroupServiceImpl {
             });
     int userQuantity = (int) identityService.createGroupQuery().groupId(id).count();
     return userQuantity;
+  }
+
+  public String delGroup(String id) {
+    String gid = "0";
+    if (!hasSubGroup(id)) {
+      identityService.deleteGroup(id);
+      gid = id;
+    }
+    return gid;
+  }
+
+  private boolean hasSubGroup(String id) {
+    List<LgeGroupRel> subGroups = lgeGroupRelMapper.selectLgeGroupRelList(id);
+    return (subGroups.size() > 0);
   }
 }
