@@ -1,4 +1,4 @@
-package com.legends.process.engine.form.domain;
+package com.legends.form.engine.domain;
 
 
 import lombok.Data;

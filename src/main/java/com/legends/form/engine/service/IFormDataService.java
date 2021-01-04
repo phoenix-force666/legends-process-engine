@@ -1,9 +1,9 @@
-package com.legends.process.engine.form.service;
+package com.legends.form.engine.service;
 
 
 import com.legends.process.engine.base.page.PageDomain;
 import com.legends.process.engine.base.page.TableDataInfo;
-import com.legends.process.engine.form.domain.FormDataEntity;
+import com.legends.form.engine.domain.FormDataEntity;
 import org.jvnet.hk2.annotations.Service;
 
 import java.util.List;

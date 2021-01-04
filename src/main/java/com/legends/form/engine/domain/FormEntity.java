@@ -1,4 +1,4 @@
-package com.legends.process.engine.form.domain;
+package com.legends.form.engine.domain;
 
 
 import com.alibaba.fastjson.JSONObject;
@@ -16,7 +16,7 @@ public class FormEntity implements Serializable {
      * 表单ID
      */
     @Id
-    private Long id;
+    private String processDefId;
     /**
      * 表单名称
      */

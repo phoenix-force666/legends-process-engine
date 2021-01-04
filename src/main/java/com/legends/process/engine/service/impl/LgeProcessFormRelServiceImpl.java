@@ -1,11 +1,12 @@
 package com.legends.process.engine.service.impl;
 
-import java.util.List;
+import com.legends.process.engine.domain.LgeProcessFormRel;
+import com.legends.process.engine.mapper.LgeProcessFormRelMapper;
+import com.legends.process.engine.service.ILgeProcessFormRelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.legends.process.engine.mapper.LgeProcessFormRelMapper;
-import com.legends.process.engine.domain.LgeProcessFormRel;
-import com.legends.process.engine.service.ILgeProcessFormRelService;
+
+import java.util.List;
 
 /**
  * 流程表单关联Service业务层处理
@@ -50,8 +51,7 @@ public class LgeProcessFormRelServiceImpl implements ILgeProcessFormRelService
      * @return 结果
      */
     @Override
-    public int insertLgeProcessFormRel(LgeProcessFormRel lgeProcessFormRel)
-    {
+    public int insertLgeProcessFormRel(LgeProcessFormRel lgeProcessFormRel) {
         return lgeProcessFormRelMapper.insertLgeProcessFormRel(lgeProcessFormRel);
     }
 

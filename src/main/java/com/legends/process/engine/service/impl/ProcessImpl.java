@@ -1,8 +1,8 @@
 package com.legends.process.engine.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.legends.process.engine.form.domain.FormDataEntity;
-import com.legends.process.engine.form.service.IFormDataService;
+import com.legends.form.engine.domain.FormDataEntity;
+import com.legends.form.engine.service.IFormDataService;
 import com.legends.process.engine.service.IProcessService;
 import com.legends.process.engine.vo.PscCommonProcessRequest;
 import com.legends.process.engine.vo.PscCommonTaskRequest;
@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
@@ -31,6 +32,7 @@ import java.util.*;
  * @author herion
  */
 @Service
+@Transactional
 public class ProcessImpl implements IProcessService {
 	private static final Logger logger = LoggerFactory.getLogger(ProcessImpl.class);
 
@@ -294,17 +296,7 @@ public class ProcessImpl implements IProcessService {
 
 		ActivityInstance tree = runtimeService.getActivityInstance(pscCommonTaskRequest.getProcessInstId());
 		if(rejectType.equals(PscCommonTaskRequest.REJECT_TO_START)){
-			List<HistoricActivityInstance> resultList = historyService
-					.createHistoricActivityInstanceQuery()
-					.processInstanceId(pscCommonTaskRequest.getProcessInstId())
-					.activityType("userTask")
-					.finished()
-					.orderByHistoricActivityInstanceEndTime()
-					.asc()
-					.list();
-			if (resultList == null || resultList.size() <= 0) {
-				throw new Exception("未找到发起节点");
-			}
+			List<HistoricActivityInstance> resultList = this.rejectToStart(pscCommonTaskRequest);
 			pscCommonTaskRequest.setToActId(resultList.get(0).getActivityId());
 		}else if(rejectType.equals(PscCommonTaskRequest.REJECT_TO_LAST)){
 			List<HistoricActivityInstance> resultList = historyService
@@ -316,7 +308,8 @@ public class ProcessImpl implements IProcessService {
 					.desc()
 					.list();
 			if (resultList == null || resultList.size() <= 0) {
-				throw new Exception("未找到上一节点");
+//				throw new Exception("未找到上一节点");
+				resultList=this.rejectToStart(pscCommonTaskRequest);
 			}
 			pscCommonTaskRequest.setToActId(resultList.get(0).getActivityId());
 		}else if(rejectType.equals(PscCommonTaskRequest.REJECT_TO_TARGET)){
@@ -341,6 +334,24 @@ public class ProcessImpl implements IProcessService {
 //		}
 //		taskList = simpleGetTasks(pscCommonTaskRequest.getProcessInstId());
 		return taskList;
+	}
+
+
+
+	private List<HistoricActivityInstance> rejectToStart(PscCommonTaskRequest pscCommonTaskRequest) throws Exception{
+		List<HistoricActivityInstance> resultList = historyService
+				.createHistoricActivityInstanceQuery()
+				.processInstanceId(pscCommonTaskRequest.getProcessInstId())
+				.activityType("startEvent")
+				.finished()
+				.orderByHistoricActivityInstanceEndTime()
+				.asc()
+				.list();
+		if (resultList == null || resultList.size() <= 0) {
+			throw new Exception("未找到发起节点");
+		}
+		pscCommonTaskRequest.setToActId(resultList.get(0).getActivityId());
+		return  resultList;
 	}
 
 	/**

@@ -1,10 +1,10 @@
-package com.legends.process.engine.form.service.impl;
+package com.legends.form.engine.service.impl;
 
 import com.legends.process.engine.base.page.PageDomain;
 import com.legends.process.engine.base.page.TableDataInfo;
 import com.legends.process.engine.base.utils.MongoUtil;
-import com.legends.process.engine.form.domain.FormEntity;
-import com.legends.process.engine.form.service.IFormService;
+import com.legends.form.engine.domain.FormEntity;
+import com.legends.form.engine.service.IFormService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -55,7 +55,7 @@ public class FromServiceImpl implements IFormService {
     }
 
     @Override
-    public FormEntity findById(Long id) {
+    public FormEntity findById(String id) {
         return mongoTemplate.findById(id,FormEntity.class);
     }
 }

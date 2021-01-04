@@ -1,9 +1,9 @@
-package com.legends.process.engine.form.service;
+package com.legends.form.engine.service;
 
 
 import com.legends.process.engine.base.page.PageDomain;
 import com.legends.process.engine.base.page.TableDataInfo;
-import com.legends.process.engine.form.domain.FormEntity;
+import com.legends.form.engine.domain.FormEntity;
 import org.jvnet.hk2.annotations.Service;
 
 import java.util.List;
@@ -16,5 +16,5 @@ public interface IFormService {
 
     public int save(FormEntity formEntity);
 
-    public FormEntity findById(Long id);
+    public FormEntity findById(String id);
 }

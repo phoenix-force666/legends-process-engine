@@ -2,13 +2,14 @@ package com.legends.process.engine.biz;
 
 
 import com.alibaba.fastjson.JSONObject;
+import com.legends.form.engine.domain.FormDataEntity;
+import com.legends.form.engine.domain.FormEntity;
+import com.legends.form.engine.service.IFormDataService;
+import com.legends.form.engine.service.IFormService;
+import com.legends.form.engine.vo.FormVO;
 import com.legends.process.engine.domain.LgeProcessFormRel;
-import com.legends.process.engine.form.domain.FormDataEntity;
-import com.legends.process.engine.form.domain.FormEntity;
-import com.legends.process.engine.form.service.IFormDataService;
-import com.legends.process.engine.form.service.IFormService;
-import com.legends.process.engine.form.vo.FormVO;
 import com.legends.process.engine.mapper.LgeProcessFormRelMapper;
+import com.legends.process.engine.vo.FormSaveReq;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,7 +40,7 @@ public class ProcessFormRelBiz {
         LgeProcessFormRel lgeProcessFormRel=processFormRelMapper.getProcessFormByProcessDeploymentId(processDeploymentId);
         FormEntity formEntity =null;
         if(Objects.nonNull(lgeProcessFormRel)){
-            formEntity =formService.findById(lgeProcessFormRel.getFormDeployId());
+            formEntity =formService.findById(processDeploymentId);
         }
         return formEntity;
     }
@@ -79,8 +80,18 @@ public class ProcessFormRelBiz {
         LgeProcessFormRel lgeProcessFormRel=processFormRelMapper.getProcessFormByProcessDefId(processDefId);
         FormEntity formEntity =null;
         if(Objects.nonNull(lgeProcessFormRel)){
-            formEntity =formService.findById(lgeProcessFormRel.getFormDeployId());
+            formEntity =formService.findById(processDefId);
         }
         return formEntity;
+    }
+
+    /**
+     * 保存表单
+     * @param formSaveReq
+     */
+    public void save(FormSaveReq formSaveReq){
+//        LgeProcessFormRel lgeProcessFormRel=new LgeProcessFormRel();
+//        lgeProcessFormRel.setProcessDefId(formSaveReq.getProcessDefId());
+//        processFormRelMapper.insertLgeProcessFormRel(lgeProcessFormRel);
     }
 }
