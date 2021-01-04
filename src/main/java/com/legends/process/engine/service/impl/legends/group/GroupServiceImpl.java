@@ -2,6 +2,7 @@ package com.legends.process.engine.service.impl.legends.group;
 
 import com.legends.process.engine.base.utils.text.UUID;
 import com.legends.process.engine.domain.legends.GroupTree;
+import com.legends.process.engine.domain.legends.GroupTreeRel;
 import com.legends.process.engine.domain.legends.LgeGroupRel;
 import com.legends.process.engine.entity.legends.LgeGroup;
 import com.legends.process.engine.mapper.LgeGroupRelMapper;
@@ -94,8 +95,31 @@ public class GroupServiceImpl {
    *
    * @return
    */
-  public List<GroupTree> getGroupTreeList() {
-    return groupTreeRepository.findAll();
+  public List<GroupTreeRel> getGroupTreeList(String parentId, String id, String name) {
+    List<GroupTreeRel> groupTreeRels = lgeGroupRelMapper.selectGroupTreeRel(parentId, id, name);
+    List<GroupTreeRel> collect = groupTreeRels.stream().filter(g -> g.getParentId().equals("0")).map(g -> {
+      g.setChildren(getGroupChildrens(g, groupTreeRels));
+      return g;
+    }).collect(Collectors.toList());
+    return collect;
+  }
+
+  /**
+   * 递归获取所有根节点
+   * 传入上级节点与根节点
+   *
+   * TODO 防止空的异常处理
+   * TODO 排序
+   * TODO 组员数量
+   */
+  private List<GroupTreeRel> getGroupChildrens(GroupTreeRel root, List<GroupTreeRel> groupTreeRels) {
+    List<GroupTreeRel> childrenList = groupTreeRels.stream().filter(g -> Objects.equals(g.getParentId(), root.getId())).map(
+            g -> {
+              g.setChildren(getGroupChildrens(g, groupTreeRels));
+              return g;
+            }
+    ).collect(Collectors.toList());
+    return childrenList;
   }
 
   /**

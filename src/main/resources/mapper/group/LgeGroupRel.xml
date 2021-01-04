@@ -9,6 +9,12 @@
         <result property="parentId"    column="parent_id" />
     </resultMap>
 
+    <resultMap type="GroupTreeRel" id="GroupTreeRel">
+        <result property="id"    column="id"    />
+        <result property="parentId"    column="parent_id" />
+        <result property="label"    column="label" />
+    </resultMap>
+
     <sql id="selectLgeGroupRel">
         select id, parent_id from lge_group_rel
     </sql>
@@ -49,4 +55,14 @@
         delete from lge_process_form_rel where id = #{id}
     </delete>
 
+    <select id="selectGroupTreeRel" parameterType="String" resultMap="GroupTreeRel">
+        select g.id_ id, g.name_ label, r.parent_id parent_id from lge_group_rel r, act_id_group g
+        <where>
+            r.id = g.id_
+            <if test="parentId != null  and parentId != ''"> and r.parent_id = #{parentId}</if>
+            <if test="id != null  and id != ''"> and g.id_ = #{id}</if>
+            <if test="name != null  and name != ''"> and g.name_ = #{name}</if>
+        </where>
+        order by r.parent_id asc
+    </select>
 </mapper>
