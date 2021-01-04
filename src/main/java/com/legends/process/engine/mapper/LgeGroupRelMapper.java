@@ -1,7 +1,9 @@
 package com.legends.process.engine.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.legends.process.engine.domain.legends.GroupTreeRel;
 import com.legends.process.engine.domain.legends.LgeGroupRel;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -28,4 +30,5 @@ public interface LgeGroupRelMapper extends BaseMapper<LgeGroupRel> {
     public void updateLgeGroupRel(LgeGroupRel lgeGroupRel);
 
     public void deleteLgeGroupRelById(String id);
+    public List<GroupTreeRel> selectGroupTreeRel(String parentId, String id, String name);
 }

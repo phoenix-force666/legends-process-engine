@@ -3,6 +3,8 @@ package com.legends.process.engine.service.impl.legends.user;
 import com.legends.process.engine.enums.LgeProcessEngine;
 import org.camunda.bpm.engine.IdentityService;
 import org.camunda.bpm.engine.identity.User;
+import org.camunda.bpm.engine.impl.persistence.entity.UserEntity;
+import org.omg.CORBA.UserException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +28,7 @@ public class UserServiceImpl {
 /*    private final IdentityService identityService =
             LgeProcessEngine.INSTANCE.getProcessEngine().getIdentityService();*/
 
-    public Integer addUsers(List<User> users) {
+    public Integer addUsers(List<UserEntity> users) {
         users.stream().forEach(user -> {
             identityService.saveUser(user);
         });

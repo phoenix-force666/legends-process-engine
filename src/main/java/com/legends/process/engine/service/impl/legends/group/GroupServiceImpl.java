@@ -2,9 +2,9 @@ package com.legends.process.engine.service.impl.legends.group;
 
 import com.legends.process.engine.base.utils.text.UUID;
 import com.legends.process.engine.domain.legends.GroupTree;
+import com.legends.process.engine.domain.legends.GroupTreeRel;
 import com.legends.process.engine.domain.legends.LgeGroupRel;
 import com.legends.process.engine.entity.legends.LgeGroup;
-import com.legends.process.engine.enums.LgeProcessEngine;
 import com.legends.process.engine.mapper.LgeGroupRelMapper;
 import com.legends.process.engine.repository.GroupTreeRepository;
 import org.camunda.bpm.engine.IdentityService;
@@ -33,8 +33,8 @@ import java.util.stream.StreamSupport;
 public class GroupServiceImpl {
 
   @Autowired IdentityService identityService;
-/*  private final IdentityService identityService =
-      LgeProcessEngine.INSTANCE.getProcessEngine().getIdentityService();*/
+  /*  private final IdentityService identityService =
+  LgeProcessEngine.INSTANCE.getProcessEngine().getIdentityService();*/
 
   @Autowired LgeGroupRelMapper lgeGroupRelMapper;
 
@@ -95,8 +95,31 @@ public class GroupServiceImpl {
    *
    * @return
    */
-  public List<GroupTree> getGroupTreeList() {
-    return groupTreeRepository.findAll();
+  public List<GroupTreeRel> getGroupTreeList(String parentId, String id, String name) {
+    List<GroupTreeRel> groupTreeRels = lgeGroupRelMapper.selectGroupTreeRel(parentId, id, name);
+    List<GroupTreeRel> collect = groupTreeRels.stream().filter(g -> g.getParentId().equals("0")).map(g -> {
+      g.setChildren(getGroupChildrens(g, groupTreeRels));
+      return g;
+    }).collect(Collectors.toList());
+    return collect;
+  }
+
+  /**
+   * 递归获取所有根节点
+   * 传入上级节点与根节点
+   *
+   * TODO 防止空的异常处理
+   * TODO 排序
+   * TODO 组员数量
+   */
+  private List<GroupTreeRel> getGroupChildrens(GroupTreeRel root, List<GroupTreeRel> groupTreeRels) {
+    List<GroupTreeRel> childrenList = groupTreeRels.stream().filter(g -> Objects.equals(g.getParentId(), root.getId())).map(
+            g -> {
+              g.setChildren(getGroupChildrens(g, groupTreeRels));
+              return g;
+            }
+    ).collect(Collectors.toList());
+    return childrenList;
   }
 
   /**
@@ -174,6 +197,7 @@ public class GroupServiceImpl {
 
   /**
    * 批量建立组与用户关系
+   *
    * @param gid
    * @param userids
    */
@@ -200,10 +224,11 @@ public class GroupServiceImpl {
             .list();
     Iterator<String> uids = userids.iterator();
     while (uids.hasNext()) {
+      String next = uids.next();
       users.stream()
           .forEach(
               user -> {
-                if (user.getId().equals(uids.next()))
+                if (user.getId().equals(next))
                   ;
                 uids.remove();
               });
@@ -226,7 +251,7 @@ public class GroupServiceImpl {
     String pId = lgeGroupRel.getParentId();
     while (!"0".equals(pId)) {
       newIds.add(pId);
-      newIds = getParentGroupIds(pId, newIds);
+      return getParentGroupIds(pId, newIds);
     }
     return newIds;
   }
@@ -246,5 +271,19 @@ public class GroupServiceImpl {
             });
     int userQuantity = (int) identityService.createGroupQuery().groupId(id).count();
     return userQuantity;
+  }
+
+  public String delGroup(String id) {
+    String gid = "0";
+    if (!hasSubGroup(id)) {
+      identityService.deleteGroup(id);
+      gid = id;
+    }
+    return gid;
+  }
+
+  private boolean hasSubGroup(String id) {
+    List<LgeGroupRel> subGroups = lgeGroupRelMapper.selectLgeGroupRelList(id);
+    return (subGroups.size() > 0);
   }
 }

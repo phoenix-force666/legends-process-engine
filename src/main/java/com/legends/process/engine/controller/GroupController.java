@@ -6,7 +6,6 @@ import com.legends.process.engine.entity.legends.LgeGroup;
 import com.legends.process.engine.service.impl.legends.group.GroupServiceImpl;
 import io.swagger.annotations.ApiOperation;
 import org.camunda.bpm.engine.identity.Group;
-import org.camunda.bpm.engine.identity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,8 +26,11 @@ public class GroupController {
 
   @GetMapping("/treelist")
   @ApiOperation(value = "获取组树", notes = "获取组树")
-  public ComResp<List<GroupTree>> getGroupTree() {
-    return new ComResp.Builder().data(groupService.getGroupTreeList()).build();
+  public ComResp<List<GroupTree>> getGroupTree(
+      @RequestParam(defaultValue = "") String parentId,
+      @RequestParam(defaultValue = "") String id,
+      @RequestParam(defaultValue = "") String name) {
+    return new ComResp.Builder().data(groupService.getGroupTreeList(parentId, id, name)).build();
   }
 
   @PostMapping("/treelist")
@@ -65,6 +67,19 @@ public class GroupController {
   }
 
   /**
+   * 根据组ID获取组
+   *
+   * @param id
+   * @return
+   */
+  @DeleteMapping("/{id}")
+  @ApiOperation(value = "根据组ID删除组", notes = "根据组ID删除组")
+  public ComResp<String> deleteGroup(@PathVariable String id) {
+
+    return new ComResp.Builder().data(groupService.delGroup(id)).build();
+  }
+
+  /**
    * 根据组ID获取其下用户IDs
    *
    * @param id
@@ -98,27 +113,30 @@ public class GroupController {
 
   /**
    * 更新组ID下的用户
+   *
    * @param id
    * @param userids
    * @return 组下的所有用户数
    */
   @PostMapping("/{id}/users")
   @ApiOperation(value = "更新组用户", notes = "更新组用户")
-  public ComResp<Integer> updateGroupUsers(@PathVariable String id, @RequestBody List<String> userids) {
+  public ComResp<Integer> updateGroupUsers(
+      @PathVariable String id, @RequestBody List<String> userids) {
     int userQuantity = groupService.addGroupUsers(id, userids);
     return new ComResp.Builder().data(userQuantity).build();
   }
 
-
   /**
    * 删除组ID下的用户
+   *
    * @param id
    * @param userids
    * @return 组下的所有用户数
    */
   @DeleteMapping("/{id}/users")
   @ApiOperation(value = "删除组用户", notes = "删除组用户")
-  public ComResp<Integer> delGroupUsers(@PathVariable String id, @RequestBody List<String> userids) {
+  public ComResp<Integer> delGroupUsers(
+      @PathVariable String id, @RequestBody List<String> userids) {
     int userQuantity = groupService.delGroupUsers(id, userids);
     return new ComResp.Builder().data(userQuantity).build();
   }
