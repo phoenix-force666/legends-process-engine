@@ -17,4 +17,8 @@ public interface IFormService {
     public int save(FormEntity formEntity);
 
     public FormEntity findById(String id);
+
+    public int upsertById(FormEntity formEntity);
+
+
 }

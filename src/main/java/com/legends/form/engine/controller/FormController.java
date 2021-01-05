@@ -1,6 +1,7 @@
 package com.legends.form.engine.controller;
 
 
+import com.legends.form.engine.biz.FormBiz;
 import com.legends.process.engine.base.controller.BaseController;
 import com.legends.process.engine.base.domain.AjaxResult;
 import com.legends.process.engine.base.page.PageDomain;
@@ -17,6 +18,9 @@ import java.util.List;
 public class FormController extends BaseController {
     @Autowired
     private IFormService formService;
+
+    @Autowired
+    private FormBiz formBiz;
 
     /**
      * 查询列表
@@ -38,6 +42,17 @@ public class FormController extends BaseController {
         return AjaxResult.success(formService.findById(processDefId));
     }
 
+
+    /**
+     * 获取表单与数据
+     * @param processDefId
+     * @return
+     */
+    @RequestMapping(value = "/{processDefId}/{processInstId}", method = RequestMethod.GET)
+    public AjaxResult getProcessFormInfoByProcessDefId(@PathVariable(value = "processDefId") String processDefId, @PathVariable(value = "processInstId") String processInstId) {
+        return AjaxResult.success(formBiz.getProcessFormInfoByProcessDefId(processDefId,processInstId));
+    }
+
     /**
      * 分页
      * @param formEntity
@@ -49,6 +64,7 @@ public class FormController extends BaseController {
         return formService.findByPage(formEntity,pageDomain);
     }
 
+
     /**
      * 新增
      */
@@ -57,21 +73,11 @@ public class FormController extends BaseController {
         return toAjax(formService.save(formEntity));
     }
 
-//    /**
-//     * 修改
-//     */
-//    @PutMapping
-//    public AjaxResult edit(@RequestBody SysGroup sysGroup)
-//    {
-//        return toAjax(sysGroupService.updateSysGroup(sysGroup));
-//    }
-//
-//    /**
-//     * 删除
-//     */
-//    @DeleteMapping("/{groupIds}")
-//    public AjaxResult remove(@PathVariable Integer[] groupIds)
-//    {
-//        return toAjax(sysGroupService.deleteSysGroupByIds(groupIds));
-//    }
+    /**
+     * 修改
+     */
+    @PutMapping
+    public AjaxResult upsertById(@RequestBody FormEntity formEntity) {
+        return toAjax(formService.upsertById(formEntity));
+    }
 }

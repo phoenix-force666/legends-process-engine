@@ -7,8 +7,10 @@ import com.legends.process.engine.service.IProcessService;
 import com.legends.process.engine.vo.PscCommonProcessRequest;
 import com.legends.process.engine.vo.PscCommonTaskRequest;
 import com.ruoyi.common.core.constant.CacheConstants;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.*;
+import org.camunda.bpm.engine.form.TaskFormData;
 import org.camunda.bpm.engine.history.HistoricActivityInstance;
 import org.camunda.bpm.engine.history.HistoricTaskInstance;
 import org.camunda.bpm.engine.impl.persistence.entity.TaskEntity;
@@ -33,6 +35,7 @@ import java.util.*;
  */
 @Service
 @Transactional
+@Slf4j
 public class ProcessImpl implements IProcessService {
 	private static final Logger logger = LoggerFactory.getLogger(ProcessImpl.class);
 
@@ -42,6 +45,8 @@ public class ProcessImpl implements IProcessService {
 
 	@Autowired
 	private TaskService taskService;
+	@Autowired
+	private FormService  formService;
 
 	@Autowired
 	private HistoryService historyService;
@@ -205,12 +210,22 @@ public class ProcessImpl implements IProcessService {
 		logger.info("authentication--------->" + authentication.getName());
 		Authentications.revalidateSession(request, authentication);
 		identityService.setAuthenticatedUserId(authentication.getName());
+
 		List<TaskDto> taskList = new ArrayList<TaskDto>();
 		Map<String, Object> variables = new HashMap<String, Object>();
-		variables = pscCommonTaskRequest.getVariables();
+		Map<String, Object>  reqVariables= pscCommonTaskRequest.getVariables();
 		Map<String, Object> localVariables = new HashMap<String, Object>();
 		localVariables = pscCommonTaskRequest.getLocalVariables();
 
+		//获取表单参数
+//		VariableMap variableMap=formService.getTaskFormVariables(pscCommonTaskRequest.getTaskId());
+//		log.info("variableMap:",variableMap);
+
+		//获取变量数据
+		TaskFormData taskFormData=formService.getTaskFormData(pscCommonTaskRequest.getTaskId());
+		taskFormData.getFormFields().forEach(formField ->{
+			variables.put(formField.getId(),reqVariables.get(formField.getId()));
+		});
 		runtimeService.setVariables(pscCommonTaskRequest.getProcessInstId(), localVariables);
 		if(StringUtils.isNoneBlank(pscCommonTaskRequest.getToActId())){
 			taskService.complete(pscCommonTaskRequest.getTaskId(), variables);

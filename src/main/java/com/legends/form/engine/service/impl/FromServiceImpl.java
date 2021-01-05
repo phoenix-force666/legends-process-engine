@@ -1,14 +1,17 @@
 package com.legends.form.engine.service.impl;
 
+import com.legends.form.engine.domain.FormEntity;
+import com.legends.form.engine.service.IFormService;
 import com.legends.process.engine.base.page.PageDomain;
 import com.legends.process.engine.base.page.TableDataInfo;
 import com.legends.process.engine.base.utils.MongoUtil;
-import com.legends.form.engine.domain.FormEntity;
-import com.legends.form.engine.service.IFormService;
+import com.mongodb.client.result.UpdateResult;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -17,6 +20,7 @@ import java.util.Objects;
 
 
 @Service
+@Slf4j
 public class FromServiceImpl implements IFormService {
 
     @Autowired
@@ -57,5 +61,24 @@ public class FromServiceImpl implements IFormService {
     @Override
     public FormEntity findById(String id) {
         return mongoTemplate.findById(id,FormEntity.class);
+    }
+
+    @Override
+    public int upsertById(FormEntity formEntity) {
+        if(Objects.isNull(formEntity)){
+            log.error("参数为空或缺少必填项！！！");
+            return 0;
+        }
+        Query query = new Query();
+        query.addCriteria(Criteria.where("_id").is(formEntity.getProcessDefId()));
+
+        Update update = new Update();
+        update.set("data", formEntity.getData());
+
+        /**
+         * 数据库有，就新增， 没有，就修改
+         */
+        UpdateResult updateResult=mongoTemplate.upsert(query, update, FormEntity.class);
+        return (int)updateResult.getMatchedCount();
     }
 }
